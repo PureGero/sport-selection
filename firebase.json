@@ -1,10 +1,12 @@
 {
-  "hosting": {
-    "public": "dist/default",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ]
-  }
+  "hosting": [
+    {
+      "target": "default",
+      "public": "dist/default"
+    },
+    {
+      "target": "test",
+      "public": "dist/test"
+    }
+  ]
 }

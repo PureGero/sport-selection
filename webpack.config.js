@@ -7,6 +7,10 @@ const commitHash = require('child_process')
   .toString()
   .trim();
 
+const firebaseJson = {
+  hosting: []
+};
+
 module.exports = fs.readdirSync('.').filter(f => f.startsWith('config.') && f.endsWith('.js')).map(f => {
   const name = f.substring(f.indexOf('.') + 1, f.lastIndexOf('.'));
 
@@ -15,6 +19,11 @@ module.exports = fs.readdirSync('.').filter(f => f.startsWith('config.') && f.en
     commitHash,
     ...require(`./${f}`)
   }
+
+  firebaseJson.hosting.push({
+    target: name,
+    public: 'dist/' + name
+  });
 
   console.log(`Building ${name}`);
 
@@ -53,3 +62,5 @@ module.exports = fs.readdirSync('.').filter(f => f.startsWith('config.') && f.en
     }
   }
 });
+
+fs.writeFileSync(__dirname + '/firebase.json', JSON.stringify(firebaseJson, null, 2));
