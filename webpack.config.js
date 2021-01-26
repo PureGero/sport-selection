@@ -5,6 +5,11 @@ const configDefault = require('./config.default.js');
 
 const config = Object.assign(configDefault, configCustom);
 
+config.commitHash = require('child_process')
+  .execSync('git rev-parse --short HEAD')
+  .toString()
+  .trim();
+
 module.exports = {
   mode: 'development',
   entry: __dirname + '/src/index.js',
