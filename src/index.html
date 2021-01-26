@@ -1,0 +1,11 @@
+<html lang="en">
+  <head>
+    <title><%= title %></title>
+    <script>
+      const config = JSON.parse('<%= JSON.stringify(htmlWebpackPlugin.options.templateParameters) %>');
+    </script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+  </body>
+</html>
