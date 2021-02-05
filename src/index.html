@@ -30,7 +30,7 @@
     </div-->
 
     <div class="login__container" aria-live="polite">
-      <form method="POST" action="login" onsubmit="return login()">
+      <form class="login__form" method="POST" action="login">
         <p class="login__title"><%= title %></p>
         <p class="login__error" aria-live="polite">Please enable javascript to login</p>
         <input class="login__input" type="text" name="username" aria-label="Student ID" placeholder="Student ID (eg 1234567890A)" autofocus />
@@ -41,16 +41,16 @@
     </div>
 
     <footer aria-hidden="true">
-      Made by Ethan Bulmer © <script>document.write(new Date().getFullYear())</script>
+      Made by Ethan Bulmer © <script>document.write(' ' + new Date().getFullYear() + ' ')</script>
       |
-      <a href="#" onclick="showContactUs()">Contact us</a>
+      <a href="#" class="contactus__link">Contact us</a>
       |
       <a href="privacy.html" target="_blank">Privacy policy</a>
       |
       Version <%= commitHash %>
     </footer>
 
-    <div class="popup__background" style="display: none" onclick="hideContactUs()"></div>
+    <div class="popup__background" style="display: none"></div>
 
     <div class="popup__container" style="display: none">
       <h2>For Students</h2>

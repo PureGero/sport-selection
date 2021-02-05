@@ -297,10 +297,10 @@ function renderSportList(sports, period) {
       }
     }
 
-    html += '<form action="?show_selection=true" method="post" onsubmit="return selectSport(this)">';
+    html += '<form class="sport__form" action="?show_selection=true" method="post">';
     html += '<input type="hidden" name="periodid" value="' + periodid + '" />';
     html += '<input type="hidden" name="sportid" value="' + sportid + '" />';
-    html += '<div class="' + buttonClass + ' selection--tab" onclick="return openSportDetails(this)">';
+    html += '<div class="' + buttonClass + ' selection--tab"';
     html += '<div class="selection__name">' + name + '</div>';
     html += '<div class="selection__status">' + status + '</div>';
     html += '</div>';
@@ -310,6 +310,10 @@ function renderSportList(sports, period) {
     html += '</div>'
     html += '</form>';
   }
+
+  document.querySelectorAll('.selection--tab').forEach(selectionTab => selectionTab.onclick = openSportDetails);
+
+  document.querySelectorAll('.sport__form').forEach(sportForm => sportForm.onsubmit = selectSport);
 
   html += '<p class="login__endtitle">' + subtitle + '</p>';
 
@@ -323,7 +327,7 @@ function renderPeriods(periods) {
     var period = periods[i];
     var aria = 'Open selection period ' + period.name;
 
-    html += '<form action="?show_selection=true" method="post" onsubmit="return selectPeriod(this)">';
+    html += '<form class="period__form" action="?show_selection=true" method="post">';
     html += '<input type="hidden" name="periodid" value="' + period.periodid + '" />';
     html += '<button class="selection selection--tab" aria-label="' + aria + '">';
     html += '<div class="selection__name">' + period.name + '</div>';
@@ -331,6 +335,8 @@ function renderPeriods(periods) {
     html += '</button>';
     html += '</form>';
   }
+
+  document.querySelectorAll('.period__form').forEach(sportForm => sportForm.onsubmit = selectPeriod);
 
   return html;
 }
@@ -404,3 +410,9 @@ function startCountdown(time) {
     setTimeout(startCountdown, 1000, time);
   }
 }
+
+document.querySelector('.login__form').onsubmit = login;
+
+document.querySelector('.contactus__link').onclick = showContactUs;
+
+document.querySelector('.popup__background').onclick = hideContactUs;
