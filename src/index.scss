@@ -1,7 +1,237 @@
-h1 {
-  color: $color;
+html, body {
+  box-sizing: border-box;
+  display: flex;
+  font-family: Arial, sans-serif;
+  justify-content: center;
+  margin: 0;
+  min-height: 100%;
+  padding: 0;
+  width: 100%;
 }
 
-body {
-  background: url('assets/background.jpg');
+/* Background */
+
+.background__container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.background {
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  background: url('assets/background.jpg') no-repeat center/cover;
+  filter: blur(5px);
+  margin: -10px;
+}
+
+/* Login */
+
+.login__container {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 72px 20px 36px;
+  text-align: center;
+}
+
+.login__title {
+  color: $darkColor;
+  display: inline-block;
+  font-size: 32px;
+  margin: 0 auto 10px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.login__subtitle {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.login__endtitle {
+  margin-top: 25px;
+}
+
+.login__error {
+  color: #C22;
+  display: inline-block;
+  font-size: 18px;
+  height: 20px;
+  margin: 0 0 10px;
+}
+
+.login__input, .selection {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: inline-block;
+  font-size: 18px;
+  margin: 12px auto;
+  outline: none;
+  padding: 16px 18px;
+  transition-duration: 0.1s;
+  width: 100%;
+}
+
+.login__input:focus, .selection:focus {
+  border: 1px solid $lightColor;
+  box-shadow: 0 0 0 1px $lightColor;
+}
+
+.login__input--button {
+  background-color: $darkColor;
+  color: white;
+  transition-duration: 0.3s;
+}
+
+.login__input--button:hover, .login__input--button:focus {
+  background-color: $lightColor;
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 500px) {
+  body {
+      padding: 100px 25px;
+  }
+
+  .login__page {
+      align-items: center;
+  }
+
+  .login__container{
+      border-radius: 8px;
+      height: auto;
+      /*margin-top: -240px;*/
+      min-height: auto;
+      padding: 48px 40px 36px;
+      transition-duration: 1s;
+      width: 300px;
+  }
+}
+
+/* Contact Us */
+
+.popup__background {
+  background-color: black;
+  opacity: 0.85;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.popup__container {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  margin: auto;
+  max-width: 350px;
+  padding: 28px 40px 46px;
+  position: fixed;
+}
+
+/* Sport Selection */
+
+.selection {
+  color: black;
+  text-decoration: none;
+  transition-duration: 0.3s;
+}
+
+.selection--tab {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  text-align: left;
+  z-index: 1;
+}
+
+.selection--button {
+  cursor: pointer;
+  font-size: 14px;
+  margin: 0;
+  padding: 10px 20px;
+  width: auto;
+}
+
+.selection:hover {
+  background-color: $darkColor;
+  color: white;
+}
+
+.selection--selected, .selection--selected:hover {
+  background-color: $lightColor;
+  color: white;
+  cursor: initial;
+}
+
+.selection--full, .selection--full:hover {
+  background-color: #CCC;
+  color: #555;
+  cursor: initial;
+}
+
+.selection__status {
+  flex-shrink: 0;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.selection--tab:hover {
+  cursor: pointer;
+}
+
+.selection__details {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #ddd;
+  border-radius: 0 0 4px 4px;
+  color: #444;
+  display: flex;
+  font-size: 14px;
+  justify-content: space-between;
+  margin-top: -16px;
+  padding: 14px;
+  position: absolute;
+  text-align: left;
+  top: -999px;
+}
+
+.selection__details--shown {
+  position: relative;
+  top: auto;
+}
+
+.selection__details:focus-within {
+  /* Can't combine --shown and :focus-within cause IE */
+  position: relative;
+  top: auto;
+}
+
+.login__container--selection {
+  flex-grow: 1;
+  height: auto;
+}
+
+@media only screen and (min-width: 500px) {
+  .login__container--selection {
+      max-width: 600px;
+      width: 600px;
+  }
+}
+
+footer {
+  bottom: 0;
+  color: white;
+  font-size: 12px;
+  margin: 6px;
+  position: fixed;
+  right: 0;
+}
+
+footer a {
+  color: white;
 }

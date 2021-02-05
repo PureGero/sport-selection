@@ -1,12 +1,67 @@
+<!doctype html>
 <html lang="en">
   <head>
+
     <title><%= title %></title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name="description" content="Select your sport for <%= school %>">
+    <meta property="og:title" content="<%= title %>">
+    <meta property="og:description" content="%description%">
+    <meta property="og:image" content="assets/background.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
     <script>
       const config = JSON.parse('<%= JSON.stringify(htmlWebpackPlugin.options.templateParameters) %>');
     </script>
+
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <small>Version <%= commitHash %></small>
+
+  <body class="login__page">
+
+    <div class="background__container">
+      <div class="background"></div>
+    </div>
+
+    <!--div style="position: absolute; left: 0; right: 0; top: 0; color: #F55; background-color: rgba(255, 255, 255, 0.5); text-align: center; font-size: 24px; font-weight: bold; padding: 12px">
+      !! The server is currently in testing mode, any selections will not be saved !!
+    </div-->
+
+    <div class="login__container" aria-live="polite">
+      <form method="POST" action="login" onsubmit="return login()">
+        <p class="login__title"><%= title %></p>
+        <p class="login__error" aria-live="polite">Please enable javascript to login</p>
+        <input class="login__input" type="text" name="username" aria-label="Student ID" placeholder="Student ID (eg 1234567890A)" autofocus />
+        <input class="login__input" type="password" name="password" aria-label="Password" placeholder="Password (eg 31/12/2008)" />
+        <input class="login__input login__input--button" type="submit" aria-label="Login Button" value="Login" />
+        <small>The password is your date of birth<br/>(eg 31/12/2008 or 06/03/2005)</small>
+      </form>
+    </div>
+
+    <footer aria-hidden="true">
+      Made by Ethan Bulmer © <script>document.write(new Date().getFullYear())</script>
+      |
+      <a href="#" onclick="showContactUs()">Contact us</a>
+      |
+      <a href="privacy.html" target="_blank">Privacy policy</a>
+      |
+      Version <%= commitHash %>
+    </footer>
+
+    <div class="popup__background" style="display: none" onclick="hideContactUs()"></div>
+
+    <div class="popup__container" style="display: none">
+      <h2>For Students</h2>
+      Please contact your teacher regarding any issues you encounter while selecting your sport.
+      <h2>Business Enquiries</h2>
+      For any business enquiries, please contact Ethan Bulmer at <a href="mailto:ethan@ethanbulmer.com">ethan@ethanbulmer.com</a>
+    </div>
+
+    <script>
+      document.querySelector('.login__error').innerHTML = '';
+    </script>
+
   </body>
 </html>
