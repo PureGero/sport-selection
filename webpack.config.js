@@ -28,7 +28,7 @@ module.exports = fs.readdirSync('.').filter(f => f.startsWith('config.') && f.en
   console.log(`Building ${name}`);
 
   return {
-    mode: 'development',
+    mode: 'production',
     entry: __dirname + '/src/index.js',
     output: {
       path: __dirname + '/dist/' + name,
@@ -38,7 +38,12 @@ module.exports = fs.readdirSync('.').filter(f => f.startsWith('config.') && f.en
       new HtmlWebpackPlugin({
         template: 'src/index.html',
         templateParameters: config,
-      })
+      }),
+      new HtmlWebpackPlugin({
+        filename: '404.html',
+        template: 'src/404.html',
+        templateParameters: config,
+      }),
     ],
     module: {
       rules: [
