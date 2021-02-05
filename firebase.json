@@ -1,12 +1,5 @@
 {
-  "hosting": [
-    {
-      "target": "default",
-      "public": "dist/default"
-    },
-    {
-      "target": "test",
-      "public": "dist/test"
-    }
-  ]
+  "hosting": {
+    "public": "dist"
+  }
 }
