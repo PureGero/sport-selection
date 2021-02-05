@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const jsToScss = require("./utils/jsToScss.js");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const jsToScss = require('./utils/jsToScss.js');
 const fs = require('fs');
 
 const commitHash = require('child_process')
@@ -32,31 +33,35 @@ module.exports = fs.readdirSync('.').filter(f => f.startsWith('config.') && f.en
     entry: __dirname + '/src/index.js',
     output: {
       path: __dirname + '/dist/' + name,
-      filename: 'index_bundle.js'
+      filename: 'bundle.js'
     },
     plugins: [
       new HtmlWebpackPlugin({
         template: 'src/index.html',
-        templateParameters: config,
+        templateParameters: config
       }),
       new HtmlWebpackPlugin({
         filename: '404.html',
         template: 'src/404.html',
-        templateParameters: config,
+        templateParameters: config
       }),
+      new MiniCssExtractPlugin({
+        filename: 'bundle.css'
+      })
     ],
     module: {
       rules: [
         {
           test: /\.s[ac]ss$/i,
           use: [
-            // Creates `style` nodes from JS strings
-            "style-loader",
+            {
+              loader: MiniCssExtractPlugin.loader,
+            },
             // Translates CSS into CommonJS
-            "css-loader",
+            'css-loader',
             // Compiles Sass to CSS
             {
-              loader: "sass-loader",
+              loader: 'sass-loader',
               options: {
                 additionalData: jsToScss(config)
               }
