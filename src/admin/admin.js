@@ -404,8 +404,7 @@ function loadPeriod() {
     periodid
   }, (json, err) => {
     if (err || json.error) {
-      document.querySelector('.error').innerText = err || json.error;
-      this.submit.innerText = createText;
+      disconnect(err || json.error);
     } else {
       renderSportList(json);
     }
@@ -457,16 +456,16 @@ function renderSportList(json) {
     let li = ul.querySelector(`.sport${sport.sportid}`);
     
     if (!li) {
-      ul.innerHTML += `<li class="sport${sport.sportid}" data-periodid="${json.period.periodid}" data-sportid="${sport.sportid}"><h3></h3><span class="users"></span></li>`;
+      ul.innerHTML += `<li class="sport sport${sport.sportid}" data-periodid="${sport.periodid}" data-sportid="${sport.sportid}"><h3></h3><span class="users"></span></li>`;
       li = ul.querySelector(`.sport${sport.sportid}`);
     }
     
     li.querySelector('h3').innerHTML = sport.name;
-    li.querySelector('.users').innerHTML = `${sport.users}/${sport.maxusers} users`;
+    li.querySelector('.users').innerHTML = `${sport.users ? sport.users.length : 0}/${sport.maxusers} users`;
   });
 
   ul.querySelectorAll('.new').forEach(li => li.onclick = renderCreateNewSport);
-  ul.querySelectorAll('.period').forEach(li => li.onclick = loadSport);
+  ul.querySelectorAll('.sport').forEach(li => li.onclick = loadSport);
 
   doCountdown();
 }
@@ -542,8 +541,9 @@ function renderCreateNewSport() {
   document.querySelector('.sportlist').querySelector('.new').classList.add('active');
 
   document.querySelector('main').innerHTML = `
-    <form onsubmit="return createSport(this)">
+    <form>
       <h2 id="name">Create new sport</h2>
+      <p class="error" aria-live="polite"></p>
       <input type="hidden" name="periodid" value="${periodid}"/>
       <label for="sport_name">Name:</label>
       <input type="text" id="sport_name" name="sport_name"/>
@@ -557,25 +557,36 @@ function renderCreateNewSport() {
     </form>
     `;
   document.querySelector('#sport_name').focus();
+
+  document.querySelector('main').querySelector('form').onsubmit = createSport;
 }
 
-function createSport(form) {
+function createSport() {
+  const createText = this.submit.innerText;
+
   let allowed = [];
 
-  form.querySelectorAll('input[type=checkbox]:checked').forEach(checkbox => {
+  this.querySelectorAll('input[type=checkbox]:checked').forEach(checkbox => {
     allowed.push(checkbox.value);
   });
 
-  send({
-    action: 'createsport',
-    periodid: form.periodid.value,
-    name: form.sport_name.value,
-    maxusers: form.maxusers.value,
-    description: form.description.value,
-    allowed: allowed,
+  post(config.adminEndPoint + '?action=createSport&database=' + config.database, {
+    periodid: this.periodid.value,
+    name: this.sport_name.value,
+    maxusers: this.maxusers.value,
+    description: this.description.value,
+    allowed,
+  }, (json, err) => {
+    if (err || json.error) {
+      document.querySelector('.error').innerText = err || json.error;
+      this.submit.innerText = createText;
+    } else {
+      renderSportList(json);
+      renderSportInfo(json);
+    }
   });
   
-  form.submit.innerText = 'Creating...';
+  this.submit.innerText = 'Creating...';
   
   // Disable default form action
   return false;
@@ -584,6 +595,8 @@ function createSport(form) {
 function loadSport() {
   const periodid = this.dataset.periodid;
   const sportid = this.dataset.sportid;
+
+  console.log(`Loading sport ${periodid}: ${sportid}`);
 
   document.querySelector('main').innerHTML = '<h2 id="name">Loading sport...</h2>';
   
@@ -595,6 +608,8 @@ function loadSport() {
 }
 
 function renderSportInfo(json) {
+  if (!json.sport) return;
+
   let allowed = '';
   
   groups.forEach(group => {
@@ -604,15 +619,17 @@ function renderSportInfo(json) {
     allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}" ${selected}/><label for="allowed.${group}">${groupName}</label></li>`;
   });
   
-  json.sport.allowed.forEach(group => {
-    if (!~groups.indexOf(group)) {
-      const groupName = ~group.indexOf('_') ? group.substr(group.indexOf('_') + 1) : group;
-      allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}" checked/><label for="allowed.${group}">${groupName}</label></li>`;
-    }
-  });
+  if (json.sport.allowed) {
+    json.sport.allowed.forEach(group => {
+      if (!~groups.indexOf(group)) {
+        const groupName = ~group.indexOf('_') ? group.substr(group.indexOf('_') + 1) : group;
+        allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}" checked/><label for="allowed.${group}">${groupName}</label></li>`;
+      }
+    });
+  }
 
-  document.querySelector('.sportlist').querySelectorAll('.active').forEach(period => {
-    period.classList.remove('active');
+  document.querySelector('.sportlist').querySelectorAll('.active').forEach(sport => {
+    sport.classList.remove('active');
   });
 
   document.querySelector('.sportlist').querySelector(`.sport${json.sport.sportid}`).classList.add('active');
@@ -620,7 +637,7 @@ function renderSportInfo(json) {
   document.querySelector('main').innerHTML = `
     <form onsubmit="return submitSport(this)">
       <h2 id="name" contenteditable>${json.sport.name}</h2>
-      <input type="hidden" name="periodid" value="${json.period.periodid}"/>
+      <input type="hidden" name="periodid" value="${json.sport.periodid}"/>
       <input type="hidden" name="sportid" value="${json.sport.sportid}"/>
       <label for="maxusers">Max users:</label>
       <input type="number" id="maxusers" name="maxusers" value="${json.sport.maxusers}"/>
@@ -628,9 +645,9 @@ function renderSportInfo(json) {
       <textarea id="description" name="description">${json.sport.description}</textarea>
       <label for="allowed">Allowed groups:</label>
       <ul id="allowed">${allowed}</ul>
-      <label for="users">Users enrolled (${json.sport.users.length}):</label>
+      <label for="users">Users enrolled (${json.sport.users ? json.sport.users.length : 0}):</label>
       <div id="users">
-        ${json.sport.users.map(renderUser).join('\n')}
+        ${json.sport.users ? json.sport.users.map(renderUser).join('\n') : ''}
       </div>
       <p></p>
       <button id="submit">Save <i class="fas fa-save"></i></button>
