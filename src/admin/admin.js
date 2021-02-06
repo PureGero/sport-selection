@@ -449,21 +449,24 @@ function renderSportList(json) {
   // Update
   let ul = document.querySelector('.sportlist').querySelector('ul');
   
-  if (!ul.querySelector('.new')) {
-    ul.innerHTML += `<li class="new" onclick="renderCreateNewSport(${json.period.periodid})"><h3>New Sport</h3></li>`;
+  if (!ul.querySelector('.new') && json.period) {
+    ul.innerHTML += `<li class="new" data-periodid="${json.period.periodid}"><h3>New Sport</h3></li>`;
   }
   
   json.sportList.forEach(sport => {
     let li = ul.querySelector(`.sport${sport.sportid}`);
     
     if (!li) {
-      ul.innerHTML += `<li class="sport${sport.sportid}" onclick="loadSport(${json.period.periodid},${sport.sportid})"><h3></h3><span class="users"></span></li>`;
+      ul.innerHTML += `<li class="sport${sport.sportid}" data-periodid="${json.period.periodid}" data-sportid="${sport.sportid}"><h3></h3><span class="users"></span></li>`;
       li = ul.querySelector(`.sport${sport.sportid}`);
     }
     
     li.querySelector('h3').innerHTML = sport.name;
     li.querySelector('.users').innerHTML = `${sport.users}/${sport.maxusers} users`;
   });
+
+  ul.querySelectorAll('.new').forEach(li => li.onclick = renderCreateNewSport);
+  ul.querySelectorAll('.period').forEach(li => li.onclick = loadSport);
 
   doCountdown();
 }
@@ -522,7 +525,9 @@ function submitPeriod(form) {
   return false;
 }
 
-function renderCreateNewSport(periodid) {
+function renderCreateNewSport() {
+  const periodid = this.dataset.periodid;
+
   let allowed = '';
   
   groups.forEach(group => {
@@ -576,7 +581,10 @@ function createSport(form) {
   return false;
 }
 
-function loadSport(periodid, sportid) {
+function loadSport() {
+  const periodid = this.dataset.periodid;
+  const sportid = this.dataset.sportid;
+
   document.querySelector('main').innerHTML = '<h2 id="name">Loading sport...</h2>';
   
   send({
