@@ -1,15 +1,14 @@
 import './admin.scss';
-
-'use strict';
-
-let wsProtocol = location.protocol == 'https:' ? 'wss' : 'ws';
-let ws = new WebSocket(`${wsProtocol}://${location.host}/admin`);
+import post from './post.js';
 
 let groups = [];
 
-ws.onclose = () => {
+let ws = {};
+
+function disconnect(error) {
   document.querySelector('.disconnected').style.display = '';
-};
+  throw error;
+}
 
 ws.onerror = (error) => {
   console.error(error);
@@ -48,16 +47,22 @@ function send(json) {
   ws.send(JSON.stringify(json));
 }
 
-function login(form) {
+function login() {
   document.querySelector('.error').innerHTML = '';
   
-  send({
-    action: 'login',
-    username: form.username.value,
-    password: form.password.value
+  post(config.adminEndPoint + '?action=login&database=' + config.database, {
+    username: this.username.value,
+    password: this.password.value
+  }, (json, err) => {
+    if (err || json.error) {
+      document.querySelector('.error').innerText = err || json.error;
+      this.submit.innerText = 'Login';
+    } else {
+      init(json.username);
+    }
   });
   
-  form.submit.innerText = 'Logging in...';
+  this.submit.innerText = 'Logging in...';
   
   // Disable default form action
   return false;
@@ -75,8 +80,12 @@ function loadPeriodList() {
   document.querySelector('.sportlist').innerHTML = '';
   document.querySelector('main').innerHTML = '<h2 id="name">Loading period list...</h2>';
   
-  send({
-    action: 'periodlist'
+  post(config.adminEndPoint + '?action=periodList&database=' + config.database, {}, (json, err) => {
+    if (err) {
+      disconnect(err);
+    } else {
+      renderPeriodList(json);
+    }
   });
 }
 
@@ -298,7 +307,7 @@ function renderPeriodList(json) {
     ul.innerHTML += '<li class="new" onclick="renderCreateNewPeriod()"><h3>New Period</h3></li>';
   }
   
-  json.periodlist.forEach(period => {
+  json.periodList.forEach(period => {
     let li = ul.querySelector(`.period${period.periodid}`);
     
     if (!li) {
@@ -710,4 +719,10 @@ function prettifyTime(millis) {
   } else {
     return "in " + days + " days";
   }
+}
+
+const loginForm = document.querySelector('#loginForm');
+
+if (loginForm) {
+  loginForm.onsubmit = login;
 }

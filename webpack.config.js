@@ -5,7 +5,7 @@ const fs = require('fs');
 
 fs.rmdirSync(__dirname + '/dist', { recursive: true });
 
-const mode = 'production';
+const mode = 'development';
 
 const commitHash = require('child_process')
   .execSync('git rev-parse --short HEAD')
