@@ -13,8 +13,6 @@ function login() {
     loginButton.value = 'Logging in...';
   }
 
-  var form = document.querySelector('form');
-  var data = new FormData(form);
   var req = new XMLHttpRequest();
 
   req.onreadystatechange = function() {
@@ -41,8 +39,11 @@ function login() {
     }
   };
 
-  req.open('POST', 'login?json=true', true);
-  req.send(data);
+  req.open('POST', config.endPoint + '?action=login&database=' + config.database, true);
+  req.send(JSON.stringify({
+    username: this.username.value,
+    password: this.password.value,
+  }));
 
   // Cancel default form action
   return false;
@@ -160,12 +161,12 @@ function showSelectionPage() {
     }
   };
 
-  req.open('GET', 'listsports?json=true', true);
+
+  req.open('GET', config.endPoint + '?action=listsports&database=' + config.database, true);
   req.send();
 }
 
 function listSports(form) {
-  var data = new FormData(form);
   var req = new XMLHttpRequest();
 
   req.onreadystatechange = function() {
@@ -180,8 +181,11 @@ function listSports(form) {
     }
   };
 
-  req.open('POST', 'listsports?json=true', true);
-  req.send(data);
+  req.open('POST', config.endPoint + '?action=listsports&database=' + config.database, true);
+  req.send(JSON.stringify({
+    sportid: form.sportid.value,
+    periodid: form.periodid.value,
+  }));
 }
 
 function listSportsError(status, error) {
