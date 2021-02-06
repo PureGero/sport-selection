@@ -44,7 +44,7 @@ ws.onopen = () => {
 }
 
 function send(json) {
-  ws.send(JSON.stringify(json));
+  // ws.send(JSON.stringify(json));
 }
 
 function login() {
@@ -301,17 +301,17 @@ function renderPeriodList(json) {
   }
   
   // Update
-  let ul = document.querySelector('.periodlist').querySelector('ul');
+  const ul = document.querySelector('.periodlist').querySelector('ul');
   
   if (!ul.querySelector('.new')) {
-    ul.innerHTML += '<li class="new" onclick="renderCreateNewPeriod()"><h3>New Period</h3></li>';
+    ul.innerHTML += '<li class="new"><h3>New Period</h3></li>';
   }
   
   json.periodList.forEach(period => {
     let li = ul.querySelector(`.period${period.periodid}`);
     
     if (!li) {
-      ul.innerHTML += `<li class="period${period.periodid}" onclick="loadPeriod(${period.periodid})"><h3></h3><span class="time"></span></li>`;
+      ul.innerHTML += `<li class="period period${period.periodid}" data-periodid="${period.periodid}"><h3></h3><span class="time"></span></li>`;
       li = ul.querySelector(`.period${period.periodid}`);
     }
   
@@ -328,6 +328,9 @@ function renderPeriodList(json) {
     li.querySelector('h3').innerHTML = period.name;
     li.querySelector('.time').innerHTML = time;
   });
+
+  ul.querySelectorAll('.new').forEach(li => li.onclick = renderCreateNewPeriod);
+  ul.querySelectorAll('.period').forEach(li => li.onclick = loadPeriod);
   
   requestStudentCounts();
   
@@ -375,7 +378,11 @@ function createPeriod(form) {
   return false;
 }
 
-function loadPeriod(periodid) {
+function loadPeriod() {
+  const periodid = this.dataset.periodid;
+
+  console.log(`Loading period ${periodid}`);
+
   document.querySelector('.sportlist').innerHTML = '<h2 id="sportlist">Loading...</h2>';
   document.querySelector('main').innerHTML = '<h2 id="name">Loading period...</h2>';
   
