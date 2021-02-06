@@ -399,10 +399,16 @@ function loadPeriod() {
 
   document.querySelector('.sportlist').innerHTML = '<h2 id="sportlist">Loading...</h2>';
   document.querySelector('main').innerHTML = '<h2 id="name">Loading period...</h2>';
-  
-  send({
-    action: 'sportlist',
-    periodid: periodid
+
+  post(config.adminEndPoint + '?action=sportList&database=' + config.database, {
+    periodid
+  }, (json, err) => {
+    if (err || json.error) {
+      document.querySelector('.error').innerText = err || json.error;
+      this.submit.innerText = createText;
+    } else {
+      renderSportList(json);
+    }
   });
 }
 
