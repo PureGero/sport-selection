@@ -280,6 +280,8 @@ function storeStudentData(input) {
 }
 
 function renderPeriodList(json) {
+  if (!json.periodList) return;
+
   if (document.querySelector('.periodlist').innerHTML.indexOf('Loading...') >= 0) {
     // Render main aswell
     document.querySelector('main').innerHTML = `
@@ -347,8 +349,9 @@ function renderCreateNewPeriod() {
   document.querySelector('.periodlist').querySelector('.new').classList.add('active');
 
   document.querySelector('main').innerHTML = `
-    <form onsubmit="return createPeriod(this)">
+    <form>
       <h2 id="name">Create new period</h2>
+      <p class="error" aria-live="polite"></p>
       <label for="period_name">Name:</label>
       <input type="text" id="period_name" name="period_name"/>
       <label for="opens">Opens at:</label>
@@ -361,18 +364,29 @@ function renderCreateNewPeriod() {
     </form>
     `;
   document.querySelector('#period_name').focus();
+
+  document.querySelector('main').querySelector('form').onsubmit = createPeriod;
 }
 
-function createPeriod(form) {
-  send({
-    action: 'createperiod',
-    name: form.period_name.value,
-    opens: new Date(form.opens.value).getTime(),
-    closes: new Date(form.closes.value).getTime(),
-    description: form.description.value,
+function createPeriod() {
+  const createText = this.submit.innerText;
+
+  post(config.adminEndPoint + '?action=createPeriod&database=' + config.database, {
+    name: this.period_name.value,
+    opens: new Date(this.opens.value).getTime(),
+    closes: new Date(this.closes.value).getTime(),
+    description: this.description.value
+  }, (json, err) => {
+    if (err || json.error) {
+      document.querySelector('.error').innerText = err || json.error;
+      this.submit.innerText = createText;
+    } else {
+      renderPeriodList(json);
+      renderSportList(json);
+    }
   });
   
-  form.submit.innerText = 'Creating...';
+  this.submit.innerText = 'Creating...';
   
   // Disable default form action
   return false;
@@ -393,8 +407,12 @@ function loadPeriod() {
 }
 
 function renderSportList(json) {
-  if (document.querySelector('.sportlist').innerHTML.length == 0 ||
-      document.querySelector('.sportlist').innerHTML.indexOf('Loading...') >= 0) {
+  if (!json.sportList) return;
+
+  if (json.period && (
+      document.querySelector('.sportlist').innerHTML.length == 0 ||
+      document.querySelector('.sportlist').innerHTML.indexOf('Loading...') >= 0
+  )) {
     // Render main aswell
     document.querySelector('main').innerHTML = `
       <form onsubmit="return submitPeriod(this)">
@@ -429,7 +447,7 @@ function renderSportList(json) {
     ul.innerHTML += `<li class="new" onclick="renderCreateNewSport(${json.period.periodid})"><h3>New Sport</h3></li>`;
   }
   
-  json.sportlist.forEach(sport => {
+  json.sportList.forEach(sport => {
     let li = ul.querySelector(`.sport${sport.sportid}`);
     
     if (!li) {
