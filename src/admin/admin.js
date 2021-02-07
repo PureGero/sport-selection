@@ -599,11 +599,16 @@ function loadSport() {
   console.log(`Loading sport ${periodid}: ${sportid}`);
 
   document.querySelector('main').innerHTML = '<h2 id="name">Loading sport...</h2>';
-  
-  send({
-    action: 'sportinfo',
+
+  post(config.adminEndPoint + '?action=sportInfo&database=' + config.database, {
     periodid: periodid,
     sportid: sportid
+  }, (json, err) => {
+    if (err || json.error) {
+      disconnect(err || json.error);
+    } else {
+      renderSportInfo(json);
+    }
   });
 }
 
@@ -615,7 +620,7 @@ function renderSportInfo(json) {
   groups.forEach(group => {
     // Remove the username prefix from the group name
     const groupName = ~group.indexOf('_') ? group.substr(group.indexOf('_') + 1) : group;
-    const selected = ~json.sport.allowed.indexOf(group) ? 'checked' : '';
+    const selected = (json.sport.allowed && ~json.sport.allowed.indexOf(group)) ? 'checked' : '';
     allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}" ${selected}/><label for="allowed.${group}">${groupName}</label></li>`;
   });
   
