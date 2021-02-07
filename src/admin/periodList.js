@@ -27,7 +27,7 @@ export function renderPeriodList(json) {
     document.querySelector('main').innerHTML = `
       <h2 id="name">Select a period on the left</h2>
       <h3>1. Upload student data</h3>
-      <p>Upload a csv containing student ids, birthdays and year levels.<br/>The student ids will be the student's username to log into<br/>${location.host}, and the birthdays will be the password.</p>
+      <p>Upload a csv containing student ids, birthdays and year levels.<br/>The student ids will be the student's username to log into ${location.host}, and the birthdays will be the password.</p>
       <a href="How to generate a csv of EQIDs Birthdays and Year levels in IDAttend.pdf" target="_blank">How to generate this in IDAttend<sup class="fas fa-external-link-alt"></sup></a>
       <p id="studentDataError"></p>
       <input type="file" id="studentDataUpload" accept="text/csv"/>
