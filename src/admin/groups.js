@@ -14,6 +14,18 @@ export function updateGroups(groups, callback) {
   });
 }
 
+export function updatePaidGroups(students, callback) {
+  post(config.adminBulkEndPoint + '?action=updatePaidGroups&database=' + config.database, {
+    students
+  }, (json, err) => {
+    if (err || json.error) {
+      callback(null, err || json.error);
+    } else {
+      callback(json);
+    }
+  });
+}
+
 export function requestGroups() {
 
 }

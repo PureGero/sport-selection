@@ -3,7 +3,7 @@ import { requestGroups } from './groups.js';
 import { renderCreateNewPeriod } from './createPeriod.js';
 import { loadPeriod } from './sportList.js';
 import { disconnect } from './admin.js';
-import { uploadStudentData } from './studentUpload.js';
+import { uploadStudentData, uploadPaidData } from './studentUpload.js';
 
 export function loadPeriodList() {
   document.querySelector('.periodlist').innerHTML = '<h2 id="periodlist">Loading...</h2>';
@@ -35,13 +35,15 @@ export function renderPeriodList(json) {
       <h3>2. Upload paid students (optional)</h3>
       <p>Upload a csv containing student ids of students who have paid.</p>
       <p id="paidDataError"></p>
-      <input type="file" onchange="uploadPaidData(this)" accept="text/csv"/>
+      <input type="file" id="paidStudentDataUpload" accept="text/csv"/>
+      <small>Privacy Note: Only the student ids will be uploaded to the server. Any other data will be filtered out.</small>
       <h3>Student counts</h3>
       <p>The counts of students in each group, for verifying the upload worked successfully</p>
       <p id="studentCounts"></p>
       `;
     document.querySelector('.periodlist').innerHTML = '<h2 id="periodlist" class="visuallyhidden">Period List</h2><ul></ul>';
     document.getElementById('studentDataUpload').onchange = uploadStudentData;
+    document.getElementById('paidStudentDataUpload').onchange = uploadPaidData;
   }
   
   // Update

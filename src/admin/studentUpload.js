@@ -1,5 +1,5 @@
 import post from './post.js';
-import { requestGroups, updateGroups } from './groups.js';
+import { requestGroups, updateGroups, updatePaidGroups } from './groups.js';
 
 function uploadStudentDataFile(file) {
   console.log('Processing ' + file.name);
@@ -84,5 +84,58 @@ function uploadStudentDataFile(file) {
 export function uploadStudentData() {
   for (let i = 0; i < this.files.length; i++) {
     uploadStudentDataFile(this.files[i]);
+  }
+}
+
+function uploadPaidDataFile(file) {
+  console.log('Processing ' + file.name);
+  document.getElementById('paidDataError').className = '';
+  document.getElementById('paidDataError').innerHTML = `Processing ${file.name}`;
+
+  const fr = new FileReader();
+  fr.onload = function() {
+    try {
+      const csv = fr.result.split('\n');
+      const students = {};
+
+      csv.forEach(entry => {
+        const columns = entry.trim().split(',');
+        const student = {};
+
+        columns.forEach(column => {
+          if (/[0-9]{10,10}[A-Z]/.test(column)) {
+            student.username = column;
+          }
+        });
+
+        if (student.username) {
+          students[student.username] = student;
+        }
+      });
+
+      console.log(students);
+
+      document.getElementById('paidDataError').innerHTML = `Uploading ${file.name}...`;
+
+      updatePaidGroups(students, (json, err) => {
+        if (err || json.error) {
+          document.querySelector('#paidDataError').innerText = err || json.error;
+        } else {
+          document.getElementById('paidDataError').innerHTML = `Uploaded ${Object.keys(students).length} paid students`;
+
+          requestGroups();
+        }
+      });
+    } catch (e) {
+      document.getElementById('paidDataError').className = 'error';
+      document.getElementById('paidDataError').innerHTML = e;
+    }
+  };
+  fr.readAsText(file);
+}
+
+export function uploadPaidData() {
+  for (let i = 0; i < this.files.length; i++) {
+    uploadPaidDataFile(this.files[i]);
   }
 }
