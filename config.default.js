@@ -6,4 +6,5 @@ module.exports = {
   darkColor: '#0034ff',
   endPoint: 'https://fwwescr19e.execute-api.ap-southeast-2.amazonaws.com/sport-selection',
   adminEndPoint: 'https://fwwescr19e.execute-api.ap-southeast-2.amazonaws.com/sport-selection-admin',
+  adminBulkEndPoint: 'https://fwwescr19e.execute-api.ap-southeast-2.amazonaws.com/sport-selection-admin-bulk',
 };

@@ -3,6 +3,7 @@ import { requestGroups } from './groups.js';
 import { renderCreateNewPeriod } from './createPeriod.js';
 import { loadPeriod } from './sportList.js';
 import { disconnect } from './admin.js';
+import { uploadStudentData } from './studentUpload.js';
 
 export function loadPeriodList() {
   document.querySelector('.periodlist').innerHTML = '<h2 id="periodlist">Loading...</h2>';
@@ -25,12 +26,13 @@ export function renderPeriodList(json) {
     // Render main aswell
     document.querySelector('main').innerHTML = `
       <h2 id="name">Select a period on the left</h2>
-      <h3>Upload student data</h3>
+      <h3>1. Upload student data</h3>
       <p>Upload a csv containing student ids, birthdays and year levels.<br/>The student ids will be the student's username to log into<br/>${location.host}, and the birthdays will be the password.</p>
       <a href="How to generate a csv of EQIDs Birthdays and Year levels in IDAttend.pdf" target="_blank">How to generate this in IDAttend<sup class="fas fa-external-link-alt"></sup></a>
       <p id="studentDataError"></p>
-      <input type="file" onchange="uploadStudentData(this)" accept="text/csv"/>
-      <h3>Upload paid students (optional)</h3>
+      <input type="file" id="studentDataUpload" accept="text/csv"/>
+      <small>Privacy Note: Only the student ids, birthdays and year levels will be uploaded to the server. Any other data will be filtered out.</small>
+      <h3>2. Upload paid students (optional)</h3>
       <p>Upload a csv containing student ids of students who have paid.</p>
       <p id="paidDataError"></p>
       <input type="file" onchange="uploadPaidData(this)" accept="text/csv"/>
@@ -39,6 +41,7 @@ export function renderPeriodList(json) {
       <p id="studentCounts"></p>
       `;
     document.querySelector('.periodlist').innerHTML = '<h2 id="periodlist" class="visuallyhidden">Period List</h2><ul></ul>';
+    document.getElementById('studentDataUpload').onchange = uploadStudentData;
   }
   
   // Update
