@@ -19,7 +19,7 @@ function login() {
     if (this.readyState == 4) {
       var data = JSON.parse(req.responseText);
 
-      if (data.success) {
+      if (data.username) {
         // Login succeeded
 
         showSelectionPage();
