@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const jsToScss = require('./utils/jsToScss.js');
 const fs = require('fs');
 
@@ -68,6 +69,11 @@ const indexWebpack = {
     }),
     new MiniCssExtractPlugin({
       filename: 'bundle-[hash].css'
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'src/static' }
+      ]
     })
   ],
   module: modules
