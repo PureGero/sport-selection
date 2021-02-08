@@ -1,4 +1,5 @@
 import post from './post.js';
+import { renderSportList } from './sportList.js';
 import { disconnect } from './admin.js';
 import { groups } from './groups.js';
 
@@ -48,8 +49,9 @@ export function renderSportInfo(json) {
   document.querySelector('.sportlist').querySelector(`.sport${json.sport.sportid}`).classList.add('active');
   
   document.querySelector('main').innerHTML = `
-    <form onsubmit="return submitSport(this)">
+    <form>
       <h2 id="name" contenteditable>${json.sport.name}</h2>
+      <p class="error" aria-live="polite"></p>
       <input type="hidden" name="periodid" value="${json.sport.periodid}"/>
       <input type="hidden" name="sportid" value="${json.sport.sportid}"/>
       <label for="maxusers">Max users:</label>
@@ -67,8 +69,59 @@ export function renderSportInfo(json) {
       <button onclick="deleteSport(this)" id="delete" class="delete" type="button">Delete <i class="fas fa-trash-alt"></i></button>
     </form>
     `;
+
+  document.querySelector('main').querySelector('form').onsubmit = submitSport;
 }
 
 function renderUser(user) {
   return `<div class="user">${user} <button onclick="deleteUser(this, '${user}')" class="fas fa-minus-circle fa-lg" title="Remove ${user} from sport"></button></div>`;
+}
+
+function submitSport() {
+  const createText = this.submit.innerHTML;
+
+  let allowed = [];
+
+  this.querySelectorAll('input[type=checkbox]:checked').forEach(checkbox => {
+    allowed.push(checkbox.value);
+  });
+
+  post(config.adminEndPoint + '?action=createSport&database=' + config.database, {
+    sportid: this.sportid.value,
+    periodid: this.periodid.value,
+    name: this.querySelector('#name').innerText,
+    maxusers: this.maxusers.value,
+    description: this.description.value,
+    allowed,
+  }, (json, err) => {
+    if (err || json.error) {
+      document.querySelector('.error').innerText = err || json.error;
+      this.submit.innerHTML = createText;
+    } else {
+      renderSportList(json);
+      renderSportInfo(json);
+    }
+  });
+  
+  this.submit.innerHTML = 'Saving...';
+  
+  // Disable default form action
+  return false;
+}
+
+function deleteSport(button) {
+  let form = button.form;
+
+  if (!confirm(`Are you sure you want to delete ${form.querySelector('#name').innerText}?`)) {
+    return;
+  }
+
+  send({
+    action: 'deletesport',
+    periodid: form.periodid.value,
+    sportid: form.sportid.value
+  });
+
+  document.querySelector('.sportlist').innerHTML = '<h2 id="sportlist">Loading...</h2>';
+  document.querySelector('main').innerHTML = '<h2 id="name">Deleting sport...</h2>';
 }

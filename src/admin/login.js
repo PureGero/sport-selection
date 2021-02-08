@@ -10,13 +10,13 @@ export function login() {
   }, (json, err) => {
     if (err || json.error) {
       document.querySelector('.error').innerText = err || json.error;
-      this.submit.innerText = 'Login';
+      this.submit.innerHTML = 'Login';
     } else {
       init(json.username);
     }
   });
   
-  this.submit.innerText = 'Logging in...';
+  this.submit.innerHTML = 'Logging in...';
   
   // Disable default form action
   return false;

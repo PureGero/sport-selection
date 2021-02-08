@@ -41,7 +41,7 @@ export function renderCreateNewSport() {
 }
 
 function createSport() {
-  const createText = this.submit.innerText;
+  const createText = this.submit.innerHTML;
 
   let allowed = [];
 
@@ -58,14 +58,14 @@ function createSport() {
   }, (json, err) => {
     if (err || json.error) {
       document.querySelector('.error').innerText = err || json.error;
-      this.submit.innerText = createText;
+      this.submit.innerHTML = createText;
     } else {
       renderSportList(json);
       renderSportInfo(json);
     }
   });
   
-  this.submit.innerText = 'Creating...';
+  this.submit.innerHTML = 'Creating...';
   
   // Disable default form action
   return false;

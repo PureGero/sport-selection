@@ -32,7 +32,7 @@ export function renderCreateNewPeriod() {
 }
 
 function createPeriod() {
-  const createText = this.submit.innerText;
+  const createText = this.submit.innerHTML;
 
   post(config.adminEndPoint + '?action=createPeriod&database=' + config.database, {
     name: this.period_name.value,
@@ -42,14 +42,14 @@ function createPeriod() {
   }, (json, err) => {
     if (err || json.error) {
       document.querySelector('.error').innerText = err || json.error;
-      this.submit.innerText = createText;
+      this.submit.innerHTML = createText;
     } else {
       renderPeriodList(json);
       renderSportList(json);
     }
   });
   
-  this.submit.innerText = 'Creating...';
+  this.submit.innerHTML = 'Creating...';
   
   // Disable default form action
   return false;
