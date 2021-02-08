@@ -25,10 +25,10 @@ export function renderPeriodList(json) {
   if (document.querySelector('.periodlist').innerHTML.indexOf('Loading...') >= 0) {
     // Render main aswell
     document.querySelector('main').innerHTML = `
-      <h2 id="name">Select a period on the left</h2>
+      <h2 id="name">Getting started</h2>
       <h3>1. Upload student data</h3>
       <p>Upload a csv containing student ids, birthdates and year levels.<br/>The student ids will be the student's username to log into ${location.host}, and the birthdates will be the password.</p>
-      <a href="How to generate a csv of EQIDs Birthdates and Year levels in IDAttend.pdf" target="_blank">How to generate this in IDAttend<sup class="fas fa-external-link-alt"></sup></a>
+      <a href="How to generate a csv of EQIDs Birthdays and Year levels in IDAttend.pdf" target="_blank">How to generate this in IDAttend<sup class="fas fa-external-link-alt"></sup></a>
       <p id="studentDataError"></p>
       <input type="file" id="studentDataUpload" accept="text/csv"/>
       <small>Privacy Note: Only the student ids, birthdates and year levels will be uploaded to the server. Any other data will be filtered out.</small>
@@ -37,6 +37,10 @@ export function renderPeriodList(json) {
       <p id="paidDataError"></p>
       <input type="file" id="paidStudentDataUpload" accept="text/csv"/>
       <small>Privacy Note: Only the student ids will be uploaded to the server. Any other data will be filtered out.</small>
+      <h3>3. Create a period</h3>
+      <p>On the top left, click 'New Period' to create a selection period.</p>
+      <h3>4. Create a sport</h3>
+      <p>After clicking on your newly created period on the left, a 'New Sport' button will appear to the right of it. Click it to create a sport.</p>
       <h3>Student counts</h3>
       <p>The counts of students in each group, for verifying the upload worked successfully</p>
       <p id="studentCounts"></p>
