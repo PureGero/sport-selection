@@ -29,16 +29,14 @@ export function renderSportInfo(json) {
   
   groups.forEach(group => {
     // Remove the username prefix from the group name
-    const groupName = ~group.indexOf('_') ? group.substr(group.indexOf('_') + 1) : group;
     const selected = (json.sport.allowed && ~json.sport.allowed.indexOf(group)) ? 'checked' : '';
-    allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}" ${selected}/><label for="allowed.${group}">${groupName}</label></li>`;
+    allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}" ${selected}/><label for="allowed.${group}">${group}</label></li>`;
   });
   
   if (json.sport.allowed) {
     json.sport.allowed.forEach(group => {
       if (!~groups.indexOf(group)) {
-        const groupName = ~group.indexOf('_') ? group.substr(group.indexOf('_') + 1) : group;
-        allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}" checked/><label for="allowed.${group}">${groupName}</label></li>`;
+        allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}" checked/><label for="allowed.${group}">${group}</label></li>`;
       }
     });
   }

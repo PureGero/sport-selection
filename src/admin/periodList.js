@@ -1,5 +1,5 @@
 import post from './post.js';
-import { requestGroups } from './groups.js';
+import { renderGroups } from './groups.js';
 import { renderCreateNewPeriod } from './createPeriod.js';
 import { loadPeriod } from './sportList.js';
 import { disconnect } from './admin.js';
@@ -78,7 +78,7 @@ export function renderPeriodList(json) {
   ul.querySelectorAll('.new').forEach(li => li.onclick = renderCreateNewPeriod);
   ul.querySelectorAll('.period').forEach(li => li.onclick = loadPeriod);
   
-  requestGroups();
+  renderGroups();
   
   doCountdown();
 }

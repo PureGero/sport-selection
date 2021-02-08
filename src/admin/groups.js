@@ -1,6 +1,7 @@
 import post from './post.js';
 
-export const groups = [];
+export let groups = [];
+let groupCounts = null;
 
 export function updateGroups(groups, callback) {
   post(config.adminBulkEndPoint + '?action=updateGroups&database=' + config.database, {
@@ -27,5 +28,31 @@ export function updatePaidGroups(students, callback) {
 }
 
 export function requestGroups() {
+  post(config.adminBulkEndPoint + '?action=groups&database=' + config.database, {}, (json, err) => {
+    if (err || json.error) {
+      throw err || json.error;
+    } else {
+      groupCounts = json.groups;
+      groups = Object.keys(json.groups).sort();
+      renderStudentCounts();
+    }
+  });
+}
 
+export function renderGroups() {
+  if (groupCounts === null) {
+    requestGroups();
+  } else {
+    renderStudentCounts();
+  }
+}
+
+function renderStudentCounts() {
+  const studentCounts = document.getElementById('studentCounts');
+
+  if (studentCounts) {
+    studentCounts.innerHTML = Object.entries(groupCounts).map(
+      ([key, value]) => `${key}: ${value} student${value == 1 ? '' : 's'}`
+    ).join('<br/>');
+  }
 }

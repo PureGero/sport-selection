@@ -162,7 +162,7 @@ function showSelectionPage() {
   };
 
 
-  req.open('GET', config.endPoint + '?action=listsports&database=' + config.database, true);
+  req.open('GET', config.endPoint + '?action=listSports&database=' + config.database, true);
   req.send();
 }
 
@@ -181,7 +181,7 @@ function listSports(form) {
     }
   };
 
-  req.open('POST', config.endPoint + '?action=listsports&database=' + config.database, true);
+  req.open('POST', config.endPoint + '?action=listSports&database=' + config.database, true);
   req.send(JSON.stringify({
     sportid: form.sportid.value,
     periodid: form.periodid.value,
@@ -201,14 +201,12 @@ function listSportsSuccess(data) {
 
   if (data.selected) {
     loginContainer.innerHTML = renderSelected(data.period);
-  } else if (data.sportlist) {
-    loginContainer.innerHTML = renderSportList(data.sportlist, data.period);
-  } else if (data.periodlist) {
-    loginContainer.innerHTML = renderPeriods(data.periodlist);
+  } else if (data.sportList) {
+    loginContainer.innerHTML = renderSportList(data.sportList, data.period);
+  } else if (data.periodList) {
+    loginContainer.innerHTML = renderPeriods(data.periodList);
   } else if (data.opens) {
     startCountdown(data.opens);
-  } else if (location.host.toLowerCase().indexOf('cavrdsport') >= 0) {
-    loginContainer.innerHTML = '<p class="login__title">Selection has been cancelled</p><p>An email will be sent to parents with further details</p>';
   } else {
     loginContainer.innerHTML = '<p class="login__title">Selection has closed</p>';
   }

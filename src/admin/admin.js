@@ -40,22 +40,6 @@ function send(json) {
   // ws.send(JSON.stringify(json));
 }
 
-function requestStudentCounts() {
-  send({
-    action: 'studentcounts'
-  });
-}
-
-function renderStudentCounts(counts) {
-  const studentCounts = document.getElementById('studentCounts');
-
-  if (studentCounts) {
-    studentCounts.innerHTML = Object.entries(counts).map(
-      ([key, value]) => `${~key.indexOf('_') ? key.substr(key.indexOf('_') + 1) : key}: ${value} student${value == 1 ? '' : 's'}`
-    ).join('<br/>');
-  }
-}
-
 let studentData = null;
 
 function storeStudentDataFile(button, file) {
