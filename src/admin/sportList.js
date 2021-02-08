@@ -1,5 +1,5 @@
 import post from './post.js';
-import { doCountdown, datetimeLocal } from './periodList.js';
+import { doCountdown, datetimeLocal, renderPeriodList } from './periodList.js';
 import { disconnect } from './admin.js';
 import { loadSport } from './sportInfo.js';
 import { renderCreateNewSport } from './createSport.js';
@@ -32,7 +32,7 @@ export function renderSportList(json) {
   )) {
     // Render main aswell
     document.querySelector('main').innerHTML = `
-      <form onsubmit="return submitPeriod(this)">
+      <form>
         <h2 id="name" contenteditable>${json.period.name}</h2>
         <input type="hidden" name="periodid" value="${json.period.periodid}"/>
         <label for="opens">Opens at:</label>
@@ -79,5 +79,34 @@ export function renderSportList(json) {
   ul.querySelectorAll('.new').forEach(li => li.onclick = renderCreateNewSport);
   ul.querySelectorAll('.sport').forEach(li => li.onclick = loadSport);
 
+  document.querySelector('main').querySelector('form').onsubmit = submitPeriod;
+
   doCountdown();
+}
+
+function submitPeriod() {
+  const createText = this.submit.innerHTML;
+
+  post(config.adminEndPoint + '?action=createPeriod&database=' + config.database, {
+    periodid: this.periodid.value,
+    name: this.querySelector('#name').innerText,
+    opens: new Date(this.opens.value).getTime(),
+    closes: new Date(this.closes.value).getTime(),
+    description: this.description.value
+  }, (json, err) => {
+    if (err || json.error) {
+      document.querySelector('.error').innerText = err || json.error;
+      this.submit.innerHTML = createText;
+    } else {
+      renderPeriodList(json);
+      renderSportList(json);
+    }
+  });
+  
+  this.submit.innerHTML = 'Saving...';
+
+  document.querySelector('.sportlist').innerHTML = '';
+  
+  // Disable default form action
+  return false;
 }

@@ -141,24 +141,6 @@ function downloadSelectionsCsv(name, csv) {
   document.querySelector('.download').innerText = 'Downloaded';
 }
 
-function submitPeriod(form) {
-  send({
-    action: 'updateperiod',
-    periodid: form.periodid.value,
-    name: form.querySelector('#name').innerText,
-    opens: new Date(form.opens.value).getTime(),
-    closes: new Date(form.closes.value).getTime(),
-    description: form.description.value,
-  });
-  
-  form.submit.innerText = 'Saving...';
-
-  document.querySelector('.sportlist').innerHTML = '';
-  
-  // Disable default form action
-  return false;
-}
-
 function deleteUser(button, user) {
   let form = button.form;
 
