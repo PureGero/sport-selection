@@ -40,6 +40,7 @@ function login() {
   };
 
   req.open('POST', config.endPoint + '?action=login&database=' + config.database, true);
+  req.withCredentials = true;
   req.send(JSON.stringify({
     username: this.username.value,
     password: this.password.value,
@@ -163,6 +164,7 @@ function showSelectionPage() {
 
 
   req.open('GET', config.endPoint + '?action=listSports&database=' + config.database, true);
+  req.withCredentials = true;
   req.send();
 }
 
@@ -182,6 +184,7 @@ function listSports(form) {
   };
 
   req.open('POST', config.endPoint + '?action=listSports&database=' + config.database, true);
+  req.withCredentials = true;
   req.send(JSON.stringify({
     sportid: form.sportid.value,
     periodid: form.periodid.value,
@@ -227,6 +230,9 @@ function renderSelected(period) {
 
 function renderSportList(sports, period) {
   var html = '<p class="login__title">' + period.name + '</p>';
+
+  // Get period.selected_name
+  sports.forEach(sport => sport.selected ? period.selected_name = sport.name : null);
 
   var subtitle;
   if (period.selected_name) {
@@ -302,7 +308,7 @@ function renderSportList(sports, period) {
     html += '<form class="sport__form" action="?show_selection=true" method="post">';
     html += '<input type="hidden" name="periodid" value="' + periodid + '" />';
     html += '<input type="hidden" name="sportid" value="' + sportid + '" />';
-    html += '<div class="' + buttonClass + ' selection--tab"';
+    html += '<div class="' + buttonClass + ' selection--tab">';
     html += '<div class="selection__name">' + name + '</div>';
     html += '<div class="selection__status">' + status + '</div>';
     html += '</div>';
@@ -406,7 +412,7 @@ function startCountdown(time) {
 
   if (Date.now() > date) {
     loginTitle.innerHTML = 'Selection is opening...';
-    setTimeout(showSelectionPage, Math.random() * 10000);
+    setTimeout(showSelectionPage, Math.random() * 1000);
   } else {
     loginTitle.innerHTML = 'Selection opens in ' + prettifyTime(date - Date.now());
     setTimeout(startCountdown, 1000, time);
