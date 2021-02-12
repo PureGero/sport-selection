@@ -2,6 +2,7 @@ import post from './post.js';
 import { doCountdown, datetimeLocal, renderPeriodList } from './periodList.js';
 import { disconnect } from './admin.js';
 import { loadSport } from './sportInfo.js';
+import { renderPeriodInfo } from './periodInfo.js';
 import { renderCreateNewSport } from './createSport.js';
 
 export function loadPeriod() {
@@ -30,31 +31,8 @@ export function renderSportList(json) {
       document.querySelector('.sportlist').innerHTML.length == 0 ||
       document.querySelector('.sportlist').innerHTML.indexOf('Loading...') >= 0
   )) {
-    // Render main aswell
-    document.querySelector('main').innerHTML = `
-      <form>
-        <h2 id="name" contenteditable>${json.period.name}</h2>
-        <input type="hidden" name="periodid" value="${json.period.periodid}"/>
-        <label for="opens">Opens at:</label>
-        <input type="datetime-local" id="opens" name="opens" value="${datetimeLocal(json.period.opens).slice(0, 16)}"/>
-        <label for="closes">Closes at:</label>
-        <input type="datetime-local" id="closes" name="closes" value="${datetimeLocal(json.period.closes).slice(0, 16)}"/>
-        <label for="description">Description:</label>
-        <textarea id="description" name="description">${json.period.description}</textarea>
-        <button id="submit">Save <i class="fas fa-save"></i></button>
-        <button onclick="downloadSelections(this)" id="download" class="download" type="button">Download Selections <i class="fas fa-download"></i></button>
-        <label for="studentData">Want more detailed student data?<br/>Upload the student data csv below:</label>
-        <input type="file" id="studentData" onchange="storeStudentData(this)" accept="text/csv"/>
-        <p id="studentDataError"></p>
-      </form>
-      `;
-    document.querySelector('.sportlist').innerHTML = `<h2 id="sportlist" periodid="${json.period.periodid}" class="visuallyhidden">Sport List</h2><ul></ul>`;
-    
-    document.querySelector('.periodlist').querySelectorAll('.active').forEach(period => {
-      period.classList.remove('active');
-    });
-
-    document.querySelector('.periodlist').querySelector(`.period${json.period.periodid}`).classList.add('active');
+    // Render period info aswell
+    renderPeriodInfo(json);
   }
   
   // Update
