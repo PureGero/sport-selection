@@ -51,7 +51,7 @@ export function renderSportList(json) {
     }
     
     li.querySelector('h3').innerHTML = sport.name;
-    li.querySelector('.users').innerHTML = `${sport.users ? sport.users.length : 0}/${sport.maxusers} users`;
+    li.querySelector('.users').innerHTML = `${sport.enrolled ? sport.enrolled.length : 0}/${sport.maxusers} users`;
   });
 
   ul.querySelectorAll('.new').forEach(li => li.onclick = renderCreateNewSport);

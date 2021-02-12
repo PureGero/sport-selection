@@ -1,5 +1,5 @@
 import post from './post.js';
-import { renderSportList } from './sportList.js';
+import { loadPeriod, renderSportList } from './sportList.js';
 import { disconnect } from './admin.js';
 import { groups } from './groups.js';
 
@@ -60,21 +60,25 @@ export function renderSportInfo(json) {
       <textarea id="description" name="description">${json.sport.description}</textarea>
       <label for="allowed">Allowed groups:</label>
       <ul id="allowed">${allowed}</ul>
-      <label for="users">Users enrolled (${json.sport.users ? json.sport.users.length : 0}):</label>
+      <label for="users">Users enrolled (${json.sport.enrolled ? json.sport.enrolled.length : 0}):</label>
       <div id="users">
-        ${json.sport.users ? json.sport.users.map(renderUser).join('\n') : ''}
+        ${json.sport.enrolled ? json.sport.enrolled.map(renderUser).join('\n') : ''}
       </div>
       <p></p>
       <button id="submit">Save <i class="fas fa-save"></i></button>
-      <button onclick="deleteSport(this)" id="delete" class="delete" type="button">Delete <i class="fas fa-trash-alt"></i></button>
+      <button id="delete" class="delete" type="button">Delete <i class="fas fa-trash-alt"></i></button>
     </form>
     `;
 
   document.querySelector('main').querySelector('form').onsubmit = submitSport;
+
+  document.getElementById('delete').onclick = deleteSport;
+
+  document.querySelectorAll('.deleteUserButton').forEach(deleteUserButton => deleteUserButton.onclick = deleteUser);
 }
 
 function renderUser(user) {
-  return `<div class="user">${user} <button onclick="deleteUser(this, '${user}')" class="fas fa-minus-circle fa-lg" title="Remove ${user} from sport"></button></div>`;
+  return `<div class="user">${user} <button data-user="${user}" class="deleteUserButton fas fa-minus-circle fa-lg" title="Remove ${user} from sport" type="button"></button></div>`;
 }
 
 function submitSport() {
@@ -109,19 +113,53 @@ function submitSport() {
   return false;
 }
 
-function deleteSport(button) {
-  let form = button.form;
+function deleteSport() {
+  const form = this.form;
 
   if (!confirm(`Are you sure you want to delete ${form.querySelector('#name').innerText}?`)) {
     return;
   }
 
-  send({
-    action: 'deletesport',
-    periodid: form.periodid.value,
-    sportid: form.sportid.value
+  const periodid = form.periodid.value;
+  const sportid = form.sportid.value;
+
+  post(config.adminEndPoint + '?action=deleteSport&database=' + config.database, {
+    periodid,
+    sportid
+  }, (json, err) => {
+    if (err || json.error) {
+      disconnect(err || json.error);
+    } else {
+      loadPeriod.apply({ dataset: { periodid } });
+    }
   });
 
   document.querySelector('.sportlist').innerHTML = '<h2 id="sportlist">Loading...</h2>';
   document.querySelector('main').innerHTML = '<h2 id="name">Deleting sport...</h2>';
+}
+
+function deleteUser() {
+  const form = this.form;
+  const user = this.dataset.user;
+
+  if (!confirm(`Are you sure you want to delete ${user} from ${form.querySelector('#name').innerText}?`)) {
+    return;
+  }
+
+  const periodid = form.periodid.value;
+  const sportid = form.sportid.value;
+
+  post(config.adminEndPoint + '?action=deleteUser&database=' + config.database, {
+    periodid,
+    sportid,
+    user
+  }, (json, err) => {
+    if (err || json.error) {
+      disconnect(err || json.error);
+    } else {
+      loadSport.apply({ dataset: { periodid, sportid } });
+    }
+  });
+  
+  form.submit.innerText = 'Deleting...';
 }
