@@ -76,9 +76,9 @@ function hideContactUs() {
   }
 }
 
-function selectPeriod(form) {
-  var selectionStatus = form.querySelector('.selection__status');
-  var selectionTab = form.querySelector('.selection--tab');
+function selectPeriod() {
+  var selectionStatus = this.querySelector('.selection__status');
+  var selectionTab = this.querySelector('.selection--tab');
 
   if (selectionStatus) {
     selectionStatus.innerHTML = 'Loading...';
@@ -88,28 +88,28 @@ function selectPeriod(form) {
     selectionTab.disabled = true;
   }
 
-  listSports(form);
+  listSports(this);
 
   // Cancel default form action
   return false;
 }
 
-function selectSport(form) {
-  var selectionButton = form.querySelector('.selection--button');
+function selectSport() {
+  var selectionButton = this.querySelector('.selection--button');
 
   if (selectionButton) {
     selectionButton.innerHTML = 'Enrolling...';
     selectionButton.disabled = true;
   }
 
-  listSports(form);
+  listSports(this);
 
   // Cancel default form action
   return false;
 }
 
-function openSportDetails(div) {
-  var details = div.parentElement.querySelector('.selection__details');
+function openSportDetails() {
+  var details = this.parentElement.querySelector('.selection__details');
 
   if (details.classList.contains('selection__details--shown')) {
 
@@ -186,8 +186,8 @@ function listSports(form) {
   req.open('POST', config.endPoint + '?action=listSports&database=' + config.database, true);
   req.withCredentials = true;
   req.send(JSON.stringify({
-    sportid: form.sportid.value,
-    periodid: form.periodid.value,
+    sportid: form.sportid && form.sportid.value,
+    periodid: form.periodid && form.periodid.value,
   }));
 }
 
@@ -220,10 +220,14 @@ function renderSelected(period) {
 
   html += '<p class="login__subtitle">You have successfully been enrolled into ' + period.selected_name + '</p>';
 
-  html += '<form action="?show_selection=true" method="post" onsubmit="return selectPeriod(this)">';
+  html += '<form action="?show_selection=true" class="selected__form" method="post">';
   html += '<input type="hidden" name="periodid" value="' + period.periodid + '" />';
   html += '<button class="login__input login__input--button">&lt; Go back to the sport selection page</button>';
   html += '</form>';
+
+  setTimeout(() => {
+    document.querySelectorAll('.selected__form').forEach(selectedForm => selectedForm.onsubmit = selectPeriod);
+  });
 
   return html;
 }
@@ -319,9 +323,11 @@ function renderSportList(sports, period) {
     html += '</form>';
   }
 
-  document.querySelectorAll('.selection--tab').forEach(selectionTab => selectionTab.onclick = openSportDetails);
+  setTimeout(() => {
+    document.querySelectorAll('.selection--tab').forEach(selectionTab => selectionTab.onclick = openSportDetails);
 
-  document.querySelectorAll('.sport__form').forEach(sportForm => sportForm.onsubmit = selectSport);
+    document.querySelectorAll('.sport__form').forEach(sportForm => sportForm.onsubmit = selectSport);
+  });
 
   html += '<p class="login__endtitle">' + subtitle + '</p>';
 
@@ -344,7 +350,9 @@ function renderPeriods(periods) {
     html += '</form>';
   }
 
-  document.querySelectorAll('.period__form').forEach(sportForm => sportForm.onsubmit = selectPeriod);
+  setTimeout(() => {
+    document.querySelectorAll('.period__form').forEach(sportForm => sportForm.onsubmit = selectPeriod);
+  });
 
   return html;
 }

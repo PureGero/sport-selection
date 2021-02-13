@@ -123,6 +123,7 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 5;
 }
 
 .popup__container {
@@ -132,6 +133,7 @@ html, body {
   max-width: 350px;
   padding: 28px 40px 46px;
   position: fixed;
+  z-index: 6;
 }
 
 /* Sport Selection */
