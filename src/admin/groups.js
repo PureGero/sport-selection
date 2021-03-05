@@ -28,7 +28,7 @@ export function updatePaidGroups(students, callback) {
 }
 
 export function requestGroups() {
-  post(config.adminBulkEndPoint + '?action=groups&database=' + config.database, {}, (json, err) => {
+  post(config.adminEndPoint + '?action=groups&database=' + config.database, {}, (json, err) => {
     if (err || json.error) {
       throw err || json.error;
     } else {
