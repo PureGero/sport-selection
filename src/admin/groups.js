@@ -1,6 +1,6 @@
 import post from './post.js';
 
-export let groups = [];
+export let globalGroups = [];
 let groupCounts = null;
 
 export function updateGroups(groups, callback) {
@@ -33,7 +33,7 @@ export function requestGroups() {
       throw err || json.error;
     } else {
       groupCounts = json.groups;
-      groups = Object.keys(json.groups).sort();
+      globalGroups = Object.keys(json.groups).sort();
       renderStudentCounts();
     }
   });

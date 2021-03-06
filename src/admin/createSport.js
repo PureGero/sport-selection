@@ -1,16 +1,16 @@
 import post from './post.js';
 import { renderSportList } from './sportList.js';
 import { renderSportInfo } from './sportInfo.js';
-import { groups } from './groups.js';
+import { globalGroups } from './groups.js';
 
 export function renderCreateNewSport() {
   const periodid = this.dataset.periodid;
 
-  let allowed = '';
+  let groups = '';
   
-  groups.forEach(group => {
+  globalGroups.forEach(group => {
     const groupName = ~group.indexOf('_') ? group.substr(group.indexOf('_') + 1) : group;
-    allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}"/><label for="allowed.${group}">${groupName}</label></li>`;
+    groups += `<li><input type="checkbox" id="groups.${group}" name="groups.${group}" value="${group}"/><label for="groups.${group}">${groupName}</label></li>`;
   });
 
   document.querySelector('.sportlist').querySelectorAll('.active').forEach(period => {
@@ -30,8 +30,8 @@ export function renderCreateNewSport() {
       <input type="number" id="maxusers" name="maxusers" value="25"/>
       <label for="description">Description:</label>
       <textarea id="description" name="description"></textarea>
-      <label for="allowed">Allowed groups:</label>
-      <ul id="allowed">${allowed}</ul>
+      <label for="groups">Allowed groups:</label>
+      <ul id="groups">${groups}</ul>
       <button id="submit">Create <i class="fas fa-plus-square"></i></button>
     </form>
     `;
@@ -43,10 +43,10 @@ export function renderCreateNewSport() {
 function createSport() {
   const createText = this.submit.innerHTML;
 
-  let allowed = [];
+  let groups = [];
 
   this.querySelectorAll('input[type=checkbox]:checked').forEach(checkbox => {
-    allowed.push(checkbox.value);
+    groups.push(checkbox.value);
   });
 
   post(config.adminEndPoint + '?action=createSport&database=' + config.database, {
@@ -54,7 +54,7 @@ function createSport() {
     name: this.sport_name.value,
     maxusers: this.maxusers.value,
     description: this.description.value,
-    allowed,
+    groups,
   }, (json, err) => {
     if (err || json.error) {
       document.querySelector('.error').innerText = err || json.error;

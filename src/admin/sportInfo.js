@@ -1,7 +1,7 @@
 import post from './post.js';
 import { loadPeriod, renderSportList } from './sportList.js';
 import { disconnect } from './admin.js';
-import { groups } from './groups.js';
+import { globalGroups } from './groups.js';
 
 export function loadSport() {
   const periodid = this.dataset.periodid;
@@ -26,18 +26,18 @@ export function loadSport() {
 export function renderSportInfo(json) {
   if (!json.sport) return;
 
-  let allowed = '';
+  let groups = '';
   
-  groups.forEach(group => {
+  globalGroups.forEach(group => {
     // Remove the username prefix from the group name
-    const selected = (json.sport.allowed && ~json.sport.allowed.indexOf(group)) ? 'checked' : '';
-    allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}" ${selected}/><label for="allowed.${group}">${group}</label></li>`;
+    const selected = (json.sport.groups && ~json.sport.groups.indexOf(group)) ? 'checked' : '';
+    groups += `<li><input type="checkbox" id="groups.${group}" name="groups.${group}" value="${group}" ${selected}/><label for="groups.${group}">${group}</label></li>`;
   });
   
-  if (json.sport.allowed) {
-    json.sport.allowed.forEach(group => {
-      if (!~groups.indexOf(group)) {
-        allowed += `<li><input type="checkbox" id="allowed.${group}" name="allowed.${group}" value="${group}" checked/><label for="allowed.${group}">${group}</label></li>`;
+  if (json.sport.groups) {
+    json.sport.groups.forEach(group => {
+      if (!~globalGroups.indexOf(group)) {
+        groups += `<li><input type="checkbox" id="groups.${group}" name="groups.${group}" value="${group}" checked/><label for="groups.${group}">${group}</label></li>`;
       }
     });
   }
@@ -58,8 +58,8 @@ export function renderSportInfo(json) {
       <input type="number" id="maxusers" name="maxusers" value="${json.sport.maxusers}"/>
       <label for="description">Description:</label>
       <textarea id="description" name="description">${json.sport.description}</textarea>
-      <label for="allowed">Allowed groups:</label>
-      <ul id="allowed">${allowed}</ul>
+      <label for="groups">Allowed groups:</label>
+      <ul id="groups">${groups}</ul>
       <label for="users">Users enrolled (${json.sport.enrolled ? json.sport.enrolled.length : 0}):</label>
       <div id="users">
         ${json.sport.enrolled ? json.sport.enrolled.map(renderUser).join('\n') : ''}
@@ -84,10 +84,10 @@ function renderUser(user) {
 function submitSport() {
   const createText = this.submit.innerHTML;
 
-  let allowed = [];
+  let groups = [];
 
   this.querySelectorAll('input[type=checkbox]:checked').forEach(checkbox => {
-    allowed.push(checkbox.value);
+    groups.push(checkbox.value);
   });
 
   post(config.adminEndPoint + '?action=createSport&database=' + config.database, {
@@ -96,7 +96,7 @@ function submitSport() {
     name: this.querySelector('#name').innerText,
     maxusers: this.maxusers.value,
     description: this.description.value,
-    allowed,
+    groups,
   }, (json, err) => {
     if (err || json.error) {
       document.querySelector('.error').innerText = err || json.error;
