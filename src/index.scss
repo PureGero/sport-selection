@@ -74,6 +74,9 @@ html, body {
   outline: none;
   padding: 16px 18px;
   transition-duration: 0.1s;
+  transition-property: background-color;
+  transition-property: border;
+  transition-property: box-shadow;
   width: 100%;
 }
 
