@@ -108,7 +108,6 @@ html, body {
       /*margin-top: -240px;*/
       min-height: auto;
       padding: 48px 40px 36px;
-      transition-duration: 1s;
       width: 300px;
   }
 }
@@ -221,6 +220,7 @@ html, body {
 @media only screen and (min-width: 500px) {
   .login__container--selection {
       max-width: 600px;
+      transition-duration: 1s;
       width: 600px;
   }
 }
