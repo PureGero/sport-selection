@@ -18,22 +18,33 @@ function uploadStudentDataFile(file) {
         const student = {};
 
         columns.forEach(column => {
-          if (/[0-9]{10,10}[A-Z]/.test(column)) {
-            student.username = column;
-          } else if (/[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{1,4}/.test(column)) {
-            student.password = column;
-          } else if (/[0-9]{1,2}/.test(column) && parseInt(column) >= 7 && parseInt(column) <= 12) {
+          if (/^[a-z]{1,5}[0-9]{1,10}$/.test(column)) {
+            student.misid = column;
+          } else if (~column.indexOf('@')) {
+            if (student.email) {
+              throw 'Multiple emails detected: ' + entry;
+            }
+            student.email = column;
+          } else if (/^[0-9]{1,2}$/.test(column) && parseInt(column) >= 7 && parseInt(column) <= 12) {
+            if (student.year) {
+              throw 'Multiple year levels detected: ' + entry;
+            }
             student.year = column;
           }
         });
 
-        if ((student.username || student.password || student.year) &&
-            !(student.username && student.password && student.year)) {
+        if (!student.email && student.misid) {
+          student.email = `${student.misid}@eq.edu.au`;
+        }
+
+        if ((student.email || student.year) &&
+            !(student.email && student.year)) {
           throw 'Invalid student entry: ' + entry;
         }
 
-        if (student.username) {
-          students[student.username] = student;
+        if (student.email) {
+          delete student.misid;
+          students[student.email] = student;
         }
       });
 
@@ -46,31 +57,21 @@ function uploadStudentDataFile(file) {
         if (!(yearGroup in groups)) groups[yearGroup] = [];
         if (!(splitGroup in groups)) groups[splitGroup] = [];
 
-        groups[yearGroup].push(student.username);
-        groups[splitGroup].push(student.username);
+        groups[yearGroup].push(student.email);
+        groups[splitGroup].push(student.email);
       });
 
       console.log(groups);
 
       document.getElementById('studentDataError').innerHTML = `Uploading ${file.name}...`;
 
-      post(config.adminBulkEndPoint + '?action=uploadStudents&database=' + config.database, {
-        students: Object.values(students)
-      }, (json, err) => {
+      updateGroups(groups, (json, err) => {
         if (err || json.error) {
           document.querySelector('#studentDataError').innerText = err || json.error;
         } else {
-          document.getElementById('studentDataError').innerHTML = `Updating groups...`;
+          document.getElementById('studentDataError').innerHTML = `Uploaded ${Object.keys(students).length} students`;
 
-          updateGroups(groups, (json, err) => {
-            if (err || json.error) {
-              document.querySelector('#studentDataError').innerText = err || json.error;
-            } else {
-              document.getElementById('studentDataError').innerHTML = `Uploaded ${Object.keys(students).length} students`;
-
-              requestGroups();
-            }
-          });
+          requestGroups();
         }
       });
     } catch (e) {
@@ -103,13 +104,23 @@ function uploadPaidDataFile(file) {
         const student = {};
 
         columns.forEach(column => {
-          if (/[0-9]{10,10}[A-Z]/.test(column)) {
-            student.username = column;
+          if (/^[a-z]{1,5}[0-9]{1,10}$/.test(column)) {
+            student.misid = column;
+          } else if (~column.indexOf('@')) {
+            if (student.email) {
+              throw 'Multiple emails detected: ' + entry;
+            }
+            student.email = column;
           }
         });
 
-        if (student.username) {
-          students[student.username] = student;
+        if (!student.email && student.misid) {
+          student.email = `${student.misid}@eq.edu.au`;
+        }
+
+        if (student.email) {
+          delete student.misid;
+          students[student.email] = student;
         }
       });
 
@@ -137,5 +148,62 @@ function uploadPaidDataFile(file) {
 export function uploadPaidData() {
   for (let i = 0; i < this.files.length; i++) {
     uploadPaidDataFile(this.files[i]);
+  }
+}
+
+function uploadTeacherDataFile(file) {
+  console.log('Processing ' + file.name);
+  document.getElementById('teacherDataError').className = '';
+  document.getElementById('teacherDataError').innerHTML = `Processing ${file.name}`;
+
+  const fr = new FileReader();
+  fr.onload = function() {
+    try {
+      const csv = fr.result.split('\n');
+      const teachers = {};
+
+      csv.forEach(entry => {
+        const columns = entry.trim().split(',');
+        const teachers = [];
+        const groups = { Teacher: teacher };
+
+        columns.forEach(column => {
+          if (~column.indexOf('@')) {
+            if (teacher.email) {
+              throw 'Multiple emails detected: ' + entry;
+            }
+            teacher.email = column;
+          }
+        });
+
+        if (teacher.email) {
+          teachers.push(teacher.email);
+        }
+      });
+
+      console.log(groups);
+
+      document.getElementById('teacherDataError').innerHTML = `Uploading ${file.name}...`;
+
+      updateGroups(groups, (json, err) => {
+        if (err || json.error) {
+          document.querySelector('#teacherDataError').innerText = err || json.error;
+        } else {
+          document.getElementById('teacherDataError').innerHTML = `Uploaded ${teachers.length} teachers`;
+
+          requestGroups();
+        }
+      });
+    } catch (e) {
+      document.getElementById('paidDataError').className = 'error';
+      document.getElementById('paidDataError').innerHTML = e;
+    }
+  };
+  fr.readAsText(file);
+}
+
+export function uploadTeacherData() {
+  for (let i = 0; i < this.files.length; i++) {
+    uploadTeacherDataFile(this.files[i]);
   }
 }

@@ -3,7 +3,7 @@ import { renderGroups } from './groups.js';
 import { renderCreateNewPeriod } from './createPeriod.js';
 import { loadPeriod } from './sportList.js';
 import { disconnect } from './admin.js';
-import { uploadStudentData, uploadPaidData } from './studentUpload.js';
+import { uploadStudentData, uploadPaidData, uploadTeacherData } from './studentUpload.js';
 
 export function loadPeriodList() {
   document.querySelector('.periodlist').innerHTML = '<h2 id="periodlist">Loading...</h2>';
@@ -26,20 +26,26 @@ export function renderPeriodList(json) {
     // Render main aswell
     document.querySelector('main').innerHTML = `
       <h2 id="name">Getting started</h2>
-      <h3>1. Upload student data</h3>
-      <p>Upload a csv containing student ids, birthdates and year levels.<br/>The student ids will be the student's username to log into ${location.host}, and the birthdates will be the password.</p>
+      <h3>1. Upload student emails</h3>
+      <p>Upload a csv containing emails and year levels.<br/>The students will be emailed a link they can use to log into ${location.host}.</p>
       <a href="How to generate a csv of EQIDs Birthdays and Year levels in IDAttend.pdf" target="_blank">How to generate this in IDAttend<sup class="fas fa-external-link-alt"></sup></a>
       <p id="studentDataError"></p>
       <input type="file" id="studentDataUpload" accept="text/csv"/>
-      <small>Privacy Note: Only the student ids, birthdates and year levels will be uploaded to the server. Any other data will be filtered out.</small>
+      <small>Note: For EQ schools, an MISID will suffice for the email</small><br/>
+      <small>Privacy Note: Only the emails and year levels will be uploaded to the server. Any other data will be filtered out.</small>
       <h3>2. Upload paid students (optional)</h3>
-      <p>Upload a csv containing student ids of students who have paid.</p>
+      <p>Upload a csv containing emails of students who have paid.</p>
       <p id="paidDataError"></p>
       <input type="file" id="paidStudentDataUpload" accept="text/csv"/>
-      <small>Privacy Note: Only the student ids will be uploaded to the server. Any other data will be filtered out.</small>
-      <h3>3. Create a period</h3>
+      <small>Privacy Note: Only the student emails will be uploaded to the server. Any other data will be filtered out.</small>
+      <h3>2. Upload teachers (optional)</h3>
+      <p>Upload a csv containing emails of teachers.</p>
+      <p id="tacherDataError"></p>
+      <input type="file" id="teacherDataUpload" accept="text/csv"/>
+      <small>Privacy Note: Only the teacher emails will be uploaded to the server. Any other data will be filtered out.</small>
+      <h3>4. Create a period</h3>
       <p>On the top left, click 'New Period' to create a selection period.</p>
-      <h3>4. Create a sport</h3>
+      <h3>5. Create a sport</h3>
       <p>After clicking on your newly created period on the left, a 'New Sport' button will appear to the right of it. Click it to create a sport.</p>
       <h3>Student counts</h3>
       <p>The counts of students in each group, for verifying the upload worked successfully</p>
@@ -48,6 +54,7 @@ export function renderPeriodList(json) {
     document.querySelector('.periodlist').innerHTML = '<h2 id="periodlist" class="visuallyhidden">Period List</h2><ul></ul>';
     document.getElementById('studentDataUpload').onchange = uploadStudentData;
     document.getElementById('paidStudentDataUpload').onchange = uploadPaidData;
+    document.getElementById('teacherDataUpload').onchange = uploadTeacherData;
   }
   
   // Update
