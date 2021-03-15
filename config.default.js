@@ -9,7 +9,7 @@ module.exports = {
   plusColor: '#1e3a63',
   hoverColor: '#00a4',
   activeColor: '#00a2',
-  endPoint: 'https://sportselection-rest.ethanbulmer.com/sport-selection',
-  adminEndPoint: 'https://sportselection-rest.ethanbulmer.com/sport-selection-admin',
-  adminBulkEndPoint: 'https://sportselection-rest.ethanbulmer.com/sport-selection-admin-bulk',
+  endPoint: 'https://sportselection-rest.ethanbulmer.com/sport-selection-username-and-password',
+  adminEndPoint: 'https://sportselection-rest.ethanbulmer.com/sport-selection-admin-username-and-password',
+  adminBulkEndPoint: 'https://sportselection-rest.ethanbulmer.com/sport-selection-admin-bulk-username-and-password',
 };
