@@ -55,6 +55,14 @@ html, body {
   margin-top: 25px;
 }
 
+.login__icon {
+  color: $darkColor;
+  display: inline-block;
+  font-size: 48px;
+  margin: 25px auto 0;
+  user-select: none;
+}
+
 .login__error {
   color: #C22;
   display: inline-block;

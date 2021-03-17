@@ -14,6 +14,8 @@
     <meta property="og:image" content="assets/background.jpg">
     <meta name="twitter:card" content="summary_large_image">
 
+    <script src="https://kit.fontawesome.com/a8132e88a5.js" crossorigin="anonymous" async></script>
+
     <script>
       const config = JSON.parse('<%= JSON.stringify(htmlWebpackPlugin.options.templateParameters) %>');
     </script>
@@ -34,9 +36,8 @@
       <form class="login__form" method="POST" action="login">
         <p class="login__title"><%= title %></p>
         <p class="login__error" aria-live="polite">Please enable javascript to login</p>
-        <input class="login__input" type="text" name="username" aria-label="Username" placeholder="Username" autofocus />
-        <input class="login__input" type="password" name="password" aria-label="Password" placeholder="Password" />
-        <input class="login__input login__input--button" type="submit" aria-label="Login Button" value="Login" />
+        <p class="login__icon"><i class="far fa-paper-plane"></i></p>
+        <p>An email will be sent to you to login</p>
       </form>
     </div>
 
