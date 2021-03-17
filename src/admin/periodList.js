@@ -4,6 +4,7 @@ import { renderCreateNewPeriod } from './createPeriod.js';
 import { loadPeriod } from './sportList.js';
 import { disconnect } from './admin.js';
 import { uploadStudentData, uploadPaidData, uploadTeacherData } from './studentUpload.js';
+import { sendEmails } from './sendEmails.js';
 
 export function loadPeriodList() {
   document.querySelector('.periodlist').innerHTML = '<h2 id="periodlist">Loading...</h2>';
@@ -38,7 +39,7 @@ export function renderPeriodList(json) {
       <p id="paidDataError"></p>
       <input type="file" id="paidStudentDataUpload" accept="text/csv"/>
       <small>Privacy Note: Only the student emails will be uploaded to the server. Any other data will be filtered out.</small>
-      <h3>2. Upload teachers (optional)</h3>
+      <h3>3. Upload teachers (optional)</h3>
       <p>Upload a csv containing emails of teachers.</p>
       <p id="tacherDataError"></p>
       <input type="file" id="teacherDataUpload" accept="text/csv"/>
@@ -47,6 +48,11 @@ export function renderPeriodList(json) {
       <p>On the top left, click 'New Period' to create a selection period.</p>
       <h3>5. Create a sport</h3>
       <p>After clicking on your newly created period on the left, a 'New Sport' button will appear to the right of it. Click it to create a sport.</p>
+      <h3>6. Send login codes</h3>
+      <p>Click the button below to send login codes to all users for accessing the site.</p>
+      <button id="sendEmails" class="download" type="button">Send login codes <i class="fas fa-paper-plane"></i></button>
+      <small>This will send <span id="emailsToSend"></span> emails</small><br/>
+      <small>Note: It may take a few minutes for emails to send</small>
       <h3>Student counts</h3>
       <p>The counts of students in each group, for verifying the upload worked successfully</p>
       <p id="studentCounts"></p>
@@ -55,6 +61,7 @@ export function renderPeriodList(json) {
     document.getElementById('studentDataUpload').onchange = uploadStudentData;
     document.getElementById('paidStudentDataUpload').onchange = uploadPaidData;
     document.getElementById('teacherDataUpload').onchange = uploadTeacherData;
+    document.getElementById('sendEmails').onclick = sendEmails;
   }
   
   // Update
