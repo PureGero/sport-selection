@@ -1,53 +1,12 @@
 import './index.scss';
 
-function login() {
-  // Set login in progress
-  var loginError = document.querySelector('.login__error');
-  var loginButton = document.querySelector('.login__input--button');
-
-  if (loginError) {
-    loginError.innerHTML = '';
-  }
-
-  if (loginButton) {
-    loginButton.value = 'Logging in...';
-  }
-
-  var req = new XMLHttpRequest();
-
-  req.onreadystatechange = function() {
-    if (this.readyState == 4) {
-      var data = JSON.parse(req.responseText);
-
-      if (data.username) {
-        // Login succeeded
-
-        showSelectionPage();
-
-      } else {
-        // Login failed
-
-        if (loginError) {
-          loginError.innerHTML = data.error ? data.error : 'Failed to login';
-        }
-
-        if (loginButton) {
-          loginButton.value = 'Login';
-        }
-
-      }
-    }
-  };
-
-  req.open('POST', config.endPoint + '?action=login&database=' + config.database, true);
-  req.withCredentials = true;
-  req.send(JSON.stringify({
-    username: this.username.value,
-    password: this.password.value,
-  }));
-
-  // Cancel default form action
-  return false;
+function getParameter(name, url = window.location.href) {
+  name = name.replace(/[\[\]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
 function showContactUs() {
@@ -163,7 +122,7 @@ function showSelectionPage() {
   };
 
 
-  req.open('GET', config.endPoint + '?action=listSports&database=' + config.database, true);
+  req.open('GET', config.endPoint + '?action=listSports&database=' + config.database + '&code=' + getParameter('code'), true);
   req.withCredentials = true;
   req.send();
 }
@@ -183,7 +142,7 @@ function listSports(form) {
     }
   };
 
-  req.open('POST', config.endPoint + '?action=listSports&database=' + config.database, true);
+  req.open('POST', config.endPoint + '?action=listSports&database=' + config.database + '&code=' + getParameter('code'), true);
   req.withCredentials = true;
   req.send(JSON.stringify({
     sportid: form.sportid && form.sportid.value,
@@ -432,3 +391,7 @@ document.querySelector('.login__form').onsubmit = login;
 document.querySelector('.contactus__link').onclick = showContactUs;
 
 document.querySelector('.popup__background').onclick = hideContactUs;
+
+if (getParameter('code')) {
+  showSelectionPage();
+}
