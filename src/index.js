@@ -386,8 +386,6 @@ function startCountdown(time) {
   }
 }
 
-document.querySelector('.login__form').onsubmit = login;
-
 document.querySelector('.contactus__link').onclick = showContactUs;
 
 document.querySelector('.popup__background').onclick = hideContactUs;
