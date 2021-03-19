@@ -56,7 +56,7 @@ function renderStudentCounts() {
 
   if (studentCounts) {
     studentCounts.innerHTML = Object.entries(groupCounts).map(
-      ([key, value]) => `${key}: ${value} student${value == 1 ? '' : 's'}`
+      ([key, value]) => `${key}: ${value} user${value == 1 ? '' : 's'}`
     ).join('<br/>');
   }
 
