@@ -160,12 +160,12 @@ function uploadTeacherDataFile(file) {
   fr.onload = function() {
     try {
       const csv = fr.result.split('\n');
-      const teachers = {};
+      const teachers = [];
+      const groups = { Teacher: teachers };
 
       csv.forEach(entry => {
         const columns = entry.trim().split(',');
-        const teachers = [];
-        const groups = { Teacher: teacher };
+        const teacher = {};
 
         columns.forEach(column => {
           if (~column.indexOf('@')) {
