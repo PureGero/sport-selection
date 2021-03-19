@@ -195,8 +195,8 @@ function uploadTeacherDataFile(file) {
         }
       });
     } catch (e) {
-      document.getElementById('paidDataError').className = 'error';
-      document.getElementById('paidDataError').innerHTML = e;
+      document.getElementById('teacherDataError').className = 'error';
+      document.getElementById('teacherDataError').innerHTML = e;
     }
   };
   fr.readAsText(file);
