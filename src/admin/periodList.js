@@ -41,7 +41,8 @@ export function renderPeriodList(json) {
       <small>Privacy Note: Only the student emails will be uploaded to the server. Any other data will be filtered out.</small>
       <h3>3. Upload teachers (optional)</h3>
       <p>Upload a csv containing emails of teachers.</p>
-      <p id="tacherDataError"></p>
+      <a href="How to export teacher emails in IDAttend.pdf" target="_blank">How to generate this in IDAttend<sup class="fas fa-external-link-alt"></sup></a>
+      <p id="teacherDataError"></p>
       <input type="file" id="teacherDataUpload" accept="text/csv"/>
       <small>Privacy Note: Only the teacher emails will be uploaded to the server. Any other data will be filtered out.</small>
       <h3>4. Create a period</h3>
@@ -53,8 +54,8 @@ export function renderPeriodList(json) {
       <button id="sendEmails" class="download" type="button">Send login codes <i class="fas fa-paper-plane"></i></button>
       <small>This will send <span id="emailsToSend"></span> emails</small><br/>
       <small>Note: It may take a few minutes for emails to send</small>
-      <h3>Student counts</h3>
-      <p>The counts of students in each group, for verifying the upload worked successfully</p>
+      <h3>User counts</h3>
+      <p>The counts of users in each group, for verifying the upload worked successfully</p>
       <p id="studentCounts"></p>
       `;
     document.querySelector('.periodlist').innerHTML = '<h2 id="periodlist" class="visuallyhidden">Period List</h2><ul></ul>';
