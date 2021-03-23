@@ -160,8 +160,7 @@ function uploadTeacherDataFile(file) {
   fr.onload = function() {
     try {
       const csv = fr.result.split('\n');
-      const teachers = [];
-      const groups = { Teacher: teachers };
+      const teachers = {};
 
       csv.forEach(entry => {
         const columns = entry.trim().split(',');
@@ -177,9 +176,11 @@ function uploadTeacherDataFile(file) {
         });
 
         if (teacher.email) {
-          teachers.push(teacher.email);
+          teachers[teacher.email] = teacher;
         }
       });
+
+      const groups = { Teacher: Object.keys(teachers) };
 
       console.log(groups);
 
