@@ -271,3 +271,47 @@ button:hover {
   margin-bottom: 50px;
   padding: 30px 50px 45px;
 }
+
+.progress__box {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  bottom: 0;
+  display: flex;
+  left: 0;
+  justify-content: center;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  top: 0;
+}
+
+.progress__box .container {
+  background-color: white;
+  box-shadow: 0 2px 20px 5px black;
+  margin-bottom: 50px;
+}
+
+.progress__box .title {
+  background-color: $darkColor;
+  border-bottom: 1px solid #e5e5e5;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 15px 75px;
+  text-transform: uppercase;
+}
+
+.progress__box svg {
+  margin: 15px;
+}
+
+.progress__box .progress {
+  font-size: 22px;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.progress__box p {
+  margin: 0 0 20px;
+}
