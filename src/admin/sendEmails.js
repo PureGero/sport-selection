@@ -25,18 +25,21 @@ export function sendEmails() {
           <p>Sent <span class="count">0</span>/${total} emails...</p>
           <p class="error"></p>
         </div>`;
-      sendEmail(2, json.emails, r2pi, total, 0);
+      sendEmail(2, json.emails, r2pi, total, 0, (count) => {
+        button.innerHTML = `Sent ${count} emails`;
+      });
     }
   });
 }
 
-function sendEmail(emailsPerSecond, emailsToSend, r2pi, total, count) {
+function sendEmail(emailsPerSecond, emailsToSend, r2pi, total, count, callback) {
   const emails = emailsToSend.splice(0, emailsPerSecond);
 
   if (!emails.length) {
     // We done - out of emails to send
     console.log(`Sent ${count} emails`);
     document.body.removeChild(document.querySelector('.progress__box'));
+    callback(count);
     return;
   }
   
@@ -54,7 +57,7 @@ function sendEmail(emailsPerSecond, emailsToSend, r2pi, total, count) {
       document.querySelector('.progress__box .progress').innerHTML = Math.ceil(count / total * 100) + '%';
       document.querySelector('.progress__box .count').innerHTML = count;
 
-      setTimeout(() => sendEmail(emailsPerSecond, emailsToSend, r2pi, total, count), 1000);
+      setTimeout(() => sendEmail(emailsPerSecond, emailsToSend, r2pi, total, count, callback), 1000);
     }
   });
 }
