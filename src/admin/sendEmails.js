@@ -25,7 +25,7 @@ export function sendEmails() {
           <p>Sent <span class="count">0</span>/${total} emails...</p>
           <p class="error"></p>
         </div>`;
-      sendEmail(2, json.emails, r2pi, total, 0, (count) => {
+      sendEmail(json.emailsPerSecond, json.emails, r2pi, total, 0, (count) => {
         button.innerHTML = `Sent ${count} emails`;
       });
     }
