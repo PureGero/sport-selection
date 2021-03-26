@@ -27,6 +27,7 @@ export function sendEmails() {
         </div>`;
       sendEmail(json.emailsPerSecond, json.emails, r2pi, total, 0, (count) => {
         button.innerHTML = `Sent ${count} emails`;
+        requestGroups();
       });
     }
   });
